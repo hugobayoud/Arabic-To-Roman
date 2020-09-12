@@ -15,10 +15,10 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/arabic-to-roman (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/arabic-to-roman')
       .expect(200)
-      .expect('Hello World!');
+      .expect('Solution proposée par Hugo BAYOUD pour le test technique : concevoir une API REST qui recoit une date en chiffres arabes et la retourne en chiffres romains');
   });
 });

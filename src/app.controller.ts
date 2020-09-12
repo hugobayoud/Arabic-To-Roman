@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
 import { ToConvert } from './interface/to-convert.interface';
 import { AppService } from './app.service';
 
@@ -14,6 +14,11 @@ export class AppController {
 
   @Post()
   convertToRoman(@Body() toConvert: ToConvert) {
+	if (!toConvert.date) {
+		return new TypeError('Aucune date en entrée...')
+	} else if (!(/^([0-3][0-9]-[0-1][0-9]-[0-9]{4})$/.test(toConvert.date))) {
+		return new TypeError('Ce n\'est pas une date...')
+	}
     return this.appService.convertToRoman(toConvert);
   }
 }
