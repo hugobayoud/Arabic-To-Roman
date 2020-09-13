@@ -87,11 +87,14 @@ export class AppService {
       throw new NotFoundException("Cette date n'existe pas...");
     }
 
+    let negYear = y < 0 ? '-' : '';
+
     const romanDate =
       this.romanize(d) +
       '-' +
       this.romanize(m) +
       '-' +
+      negYear +
       this.romanize(Math.abs(y));
 
     return {
