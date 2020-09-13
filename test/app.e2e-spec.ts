@@ -19,6 +19,14 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/arabic-to-roman')
       .expect(200)
-      .expect('Solution proposée par Hugo BAYOUD pour le test technique : concevoir une API REST qui recoit une date en chiffres arabes et la retourne en chiffres romains');
+      .expect(
+        'Solution proposée par Hugo BAYOUD pour le test technique : concevoir une API REST qui recoit une date en chiffres arabes et la retourne en chiffres romains',
+      );
+  });
+
+  it('/ (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/')
+      .expect(404);
   });
 });
