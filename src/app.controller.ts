@@ -1,9 +1,4 @@
-import { 
-	Body, 
-	Controller, 
-	Get, 
-	Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ToConvert } from './interface/to-convert.interface';
 import { AppService } from './app.service';
 

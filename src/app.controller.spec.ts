@@ -1,7 +1,5 @@
-import { 
-	Test,
-	TestingModule,
-} from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
+import { removeAllListeners } from 'process';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -78,6 +76,87 @@ describe('AppController', () => {
       expect(true).toBe(false);
     } catch (e) {
       expect(e.message).toBe("Cette date n'existe pas...");
+    }
+  });
+
+  //EXTREME CASES
+
+  it('Should return the good date romanized 1', () => {
+    expect(appService.convertToRoman({ date: '31/12/-4999' })).toStrictEqual({
+      date: '31-12--4999',
+      dateRomanized: 'XXXI-XII-MMMMCMXCIX',
+    });
+  });
+
+  it('Should return the good date romanized 2', () => {
+    expect(appService.convertToRoman({ date: '12/05/-192' })).toStrictEqual({
+      date: '12-05--192',
+      dateRomanized: 'XII-V-CXCII',
+    });
+  });
+
+  it('Should return the good date romanized 3', () => {
+    expect(appService.convertToRoman({ date: '31-12-4999' })).toStrictEqual({
+      date: '31-12-4999',
+      dateRomanized: 'XXXI-XII-MMMMCMXCIX',
+    });
+  });
+
+  it('Should return the good date romanized 4', () => {
+    expect(appService.convertToRoman({ date: '01-01-1' })).toStrictEqual({
+      date: '01-01-1',
+      dateRomanized: 'I-I-I',
+    });
+  });
+
+  it('Should throw an error because of an invalid date (month)', () => {
+    try {
+      appService.convertToRoman({ date: '31/-12/-192' });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe(
+        'Ce n\'est pas une date de la forme "jj-mm-aaaa"...',
+      );
+    }
+  });
+
+  it('Should throw an error because of an invalid date (day and month equal to 0)', () => {
+    try {
+      appService.convertToRoman({ date: '00/00/-192' });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe("Cette date n'existe pas...");
+    }
+  });
+
+  it('Should throw an error because 0 does not exist in roman', () => {
+    try {
+      appService.convertToRoman({ date: '12/05/0' });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe("0 n'a pas sa représentation en chiffre romain");
+    }
+  });
+
+  it('Should throw an error because of an out of range date (year) left', () => {
+    try {
+      appService.convertToRoman({ date: '31/12/-5000' });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe(
+        'Ne sait pas convertir un nombre plus petit que -4999 en romain...',
+      );
+    }
+  });
+
+  it('Should throw an error because of an out of range date (year) right', () => {
+    try {
+      appService.convertToRoman({ date: '31/12/5000' });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe(
+        'Ne sait pas convertir un nombre plus grand que 4999 en romain...',
+      );
     }
   });
 });

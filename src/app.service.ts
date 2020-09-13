@@ -56,7 +56,11 @@ export class AppService {
   convertToRoman(toConvert: ToConvert) {
     if (!toConvert.date) {
       throw new NotFoundException('Aucune date en entrée...');
-    } else if (!/^([0-3][0-9]-[0-1][0-9]-[0-9]{4})$/.test(toConvert.date)) {
+    } else if (
+      !/^([0-9]{2}(-|\/|\\|\.)[0-9]{2}(-|\/|\\|\.)(-|)[0-9]*)$/.test(
+        toConvert.date,
+      )
+    ) {
       throw new NotAcceptableException(
         'Ce n\'est pas une date de la forme "jj-mm-aaaa"...',
       );
@@ -64,14 +68,31 @@ export class AppService {
 
     const d = +toConvert.date.substr(0, 2);
     const m = +toConvert.date.substr(3, 2);
-    const y = +toConvert.date.substr(6, 4);
+    const yearLength = toConvert.date.length - 6;
+    const y = +toConvert.date.substr(6, yearLength);
 
-    if (!isValidDate(d, m, y)) {
+    if (Math.abs(y) === 0) {
+      throw new NotAcceptableException(
+        "0 n'a pas sa représentation en chiffre romain",
+      );
+    } else if (y < -4999) {
+      throw new NotAcceptableException(
+        'Ne sait pas convertir un nombre plus petit que -4999 en romain...',
+      );
+    } else if (y > 4999) {
+      throw new NotAcceptableException(
+        'Ne sait pas convertir un nombre plus grand que 4999 en romain...',
+      );
+    } else if (!isValidDate(d, m, y)) {
       throw new NotFoundException("Cette date n'existe pas...");
     }
 
     const romanDate =
-      this.romanize(d) + '-' + this.romanize(m) + '-' + this.romanize(y);
+      this.romanize(d) +
+      '-' +
+      this.romanize(m) +
+      '-' +
+      this.romanize(Math.abs(y));
 
     return {
       date:
